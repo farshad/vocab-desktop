@@ -1,0 +1,12 @@
+jpackage --type deb \
+  --name vocab \
+  --input /home/cmuser/Documents/workspace/vocab/vocab-desktop \
+  --main-jar target/vocab-desktop-1.0-SNAPSHOT.jar \
+  --main-class com.vocab.VocabApp \
+  --app-version 1.1 \
+  --description "Learn new vocabulary" \
+  --vendor "Defio Learning" \
+  --icon src/main/resources/images/logo_256.png \
+  --linux-shortcut \
+  --linux-menu-group "Utility;Application;" \
+  --runtime-image /home/cmuser/Documents/workspace/vocab/vocab-desktop/fx-custom-runtime
