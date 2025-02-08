@@ -49,6 +49,8 @@ public class WordViewer {
         backButton.setOnAction(event -> navigationController.navigateToWords(course, chapter));
         Button showButton = new Button("Show");
         showButton.setOnAction(e -> translate.setVisible(!translate.isVisible()));
+        translate.setOnMouseClicked(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(this.currentIndex).getTranslate(), "en")));
+        translate.setWrapText(true);
 
         // Create a layout for the buttons
         HBox buttonBox = new HBox(10, previousButton, nextButton, showButton, soundButton, backButton);
