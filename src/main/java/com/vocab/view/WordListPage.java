@@ -11,9 +11,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import lombok.Getter;
+
+import java.util.Objects;
 
 /**
  * @author Farshad Ahangari - farshad.ahg@gmail.com
@@ -62,6 +66,11 @@ public class WordListPage {
 
         // Create a scene with the layout
         scene = new Scene(root, 300, 200);
+        scene.setOnKeyPressed(event -> {
+            if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
+                backButton.fire();
+            }
+        });
         scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
     }
 }

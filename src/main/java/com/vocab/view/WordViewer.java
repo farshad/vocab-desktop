@@ -12,6 +12,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import lombok.Getter;
@@ -87,13 +89,24 @@ public class WordViewer {
                 case F,UP:
                     showButton.fire();
                     break;
+                case E:
+                    translate.fireEvent(new javafx.scene.input.MouseEvent(
+                            javafx.scene.input.MouseEvent.MOUSE_CLICKED,
+                            0, 0, 0, 0,
+                            MouseButton.PRIMARY, 1,
+                            true, true, true, true,
+                            true, true, true, true,
+                            true, true, null
+                    ));
+                    break;
                 case LEFT:
                     previousButton.fire();
-                    event.consume();
                     break;
                 case RIGHT:
                     nextButton.fire();
-                    event.consume();
+                    break;
+                case ESCAPE:
+                    backButton.fire();
                     break;
                 default:
                     break;
