@@ -38,16 +38,21 @@ public class WordViewer {
         updateWordsDisplay();
 
         Button previousButton = new Button("Pre");
+        previousButton.setFocusTraversable(Boolean.FALSE);
         previousButton.setOnAction(event -> showPreviousWord());
 
         Button nextButton = new Button("Next");
+        nextButton.setFocusTraversable(Boolean.FALSE);
         nextButton.setOnAction(event -> showNextWord());
 
         Button soundButton = new Button("S");
+        soundButton.setFocusTraversable(Boolean.FALSE);
         soundButton.setOnAction(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(this.currentIndex).getTitle(), locale)));
         Button backButton = new Button("<-");
+        backButton.setFocusTraversable(Boolean.FALSE);
         backButton.setOnAction(event -> navigationController.navigateToWords(course, chapter));
         Button showButton = new Button("Show");
+        showButton.setFocusTraversable(Boolean.FALSE);
         showButton.setOnAction(e -> translate.setVisible(!translate.isVisible()));
         translate.setOnMouseClicked(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(this.currentIndex).getTranslate(), "en-US")));
         translate.setWrapText(true);
@@ -74,6 +79,26 @@ public class WordViewer {
 
         // Create a scene with the layout
         scene = new Scene(root, 300, 200);
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case S,DOWN:
+                    soundButton.fire();
+                    break;
+                case F,UP:
+                    showButton.fire();
+                    break;
+                case LEFT:
+                    previousButton.fire();
+                    event.consume();
+                    break;
+                case RIGHT:
+                    nextButton.fire();
+                    event.consume();
+                    break;
+                default:
+                    break;
+            }
+        });
         scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
     }
 
