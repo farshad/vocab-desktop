@@ -99,10 +99,10 @@ public class WordViewer {
                             true, true, null
                     ));
                     break;
-                case LEFT:
+                case LEFT,A:
                     previousButton.fire();
                     break;
-                case RIGHT:
+                case RIGHT,D:
                     nextButton.fire();
                     break;
                 case ESCAPE:
