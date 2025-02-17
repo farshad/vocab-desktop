@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import lombok.Getter;
@@ -50,7 +49,7 @@ public class WordListPage {
             }
         });
 
-        wordListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> navigationController.navigateToWordViewer(course, chapter, words.indexOf(newValue) ));
+        wordListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> navigationController.navigateToWordViewer(course, chapter, words.indexOf(newValue)));
 
         Label courseLabel = new Label(chapter.getTitle());
 
@@ -66,6 +65,7 @@ public class WordListPage {
 
         // Create a scene with the layout
         scene = new Scene(root, 300, 200);
+        root.requestFocus();
         scene.setOnKeyPressed(event -> {
             if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
                 backButton.fire();

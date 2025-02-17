@@ -63,6 +63,7 @@ public class ChapterListPage {
 
         // Create a scene with the layout
         scene = new Scene(root, 300, 200);
+        root.requestFocus();
         scene.setOnKeyPressed(event -> {
             if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
                 backButton.fire();
