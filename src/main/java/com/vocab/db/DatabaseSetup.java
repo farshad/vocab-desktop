@@ -27,6 +27,7 @@ public class DatabaseSetup {
                 "    title VARCHAR(255) NOT NULL,\n" +
                 "    translate VARCHAR(255),\n" +
                 "    example VARCHAR(255),\n" +
+                "    fav INTEGER default(0),\n" +
                 "    FOREIGN KEY (chapter_id) REFERENCES chapters(id)\n" +
                 ");\n";
         try (Connection conn = DatabaseUtil.getConnection();
