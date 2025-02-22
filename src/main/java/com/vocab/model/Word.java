@@ -21,4 +21,5 @@ public class Word {
     private String title;
     private String translate;
     private String example;
+    private Boolean fav;
 }

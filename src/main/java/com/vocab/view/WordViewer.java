@@ -13,9 +13,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import lombok.Getter;
 
 import java.util.concurrent.Executors;
@@ -27,14 +27,15 @@ import java.util.concurrent.Executors;
 public class WordViewer {
     @Getter
     private final Scene scene;
-    private int currentIndex = 0;
+    private int currentIndex;
     private Label title = new Label();
     private Label translate = new Label();
+    private Label fav = new Label("*");
     private final ObservableList<Word> words;
     private String locale;
 
-    public WordViewer(NavigationController navigationController, Course course, Chapter chapter, int currentIndex) {
-        this.currentIndex = currentIndex;
+    public WordViewer(NavigationController navigationController, Course course, Chapter chapter, int passedIndex) {
+        currentIndex = passedIndex;
         locale = course.getLocale().toString();
         words = WordDAO.fetchWordsByChapterId(chapter.getId());
         updateWordsDisplay();
@@ -49,14 +50,14 @@ public class WordViewer {
 
         Button soundButton = new Button("S");
         soundButton.setFocusTraversable(Boolean.FALSE);
-        soundButton.setOnAction(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(this.currentIndex).getTitle(), locale)));
+        soundButton.setOnAction(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(currentIndex).getTitle(), locale)));
         Button backButton = new Button("<-");
         backButton.setFocusTraversable(Boolean.FALSE);
         backButton.setOnAction(event -> navigationController.navigateToWords(course, chapter));
         Button showButton = new Button("Show");
         showButton.setFocusTraversable(Boolean.FALSE);
         showButton.setOnAction(e -> translate.setVisible(!translate.isVisible()));
-        translate.setOnMouseClicked(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(this.currentIndex).getTranslate(), "en-US")));
+        translate.setOnMouseClicked(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(currentIndex).getTranslate(), "en-US")));
         translate.setWrapText(true);
 
         // Create a layout for the buttons
@@ -68,10 +69,13 @@ public class WordViewer {
         title.setStyle("-fx-font-size: 24px;");
         translate.setStyle("-fx-font-size: 16px;");
 
+        VBox vBox = new VBox(10, translate, fav);
+        vBox.setAlignment(Pos.CENTER);
+
         // Create a layout for the course details
         BorderPane root = new BorderPane();
 
-        root.setCenter(translate);
+        root.setCenter(vBox);
         root.setTop(title);
         root.setBottom(buttonBox);
         BorderPane.setAlignment(title, Pos.CENTER);
@@ -83,10 +87,10 @@ public class WordViewer {
         scene = new Scene(root, 300, 200);
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
-                case S,DOWN:
+                case S, DOWN:
                     soundButton.fire();
                     break;
-                case F,UP:
+                case F, UP:
                     showButton.fire();
                     break;
                 case E:
@@ -99,14 +103,28 @@ public class WordViewer {
                             true, true, null
                     ));
                     break;
-                case LEFT,A:
+                case LEFT, A:
                     previousButton.fire();
                     break;
-                case RIGHT,D:
+                case RIGHT, D:
                     nextButton.fire();
                     break;
                 case ESCAPE:
                     backButton.fire();
+                    break;
+                case F1:
+                    words.removeIf(w -> !w.getFav());
+                    updateWordsDisplay();
+                    break;
+                case F2:
+                    words.get(currentIndex).setFav(true);
+                    WordDAO.updateWord(words.get(currentIndex));
+                    updateWordsDisplay();
+                    break;
+                case F3:
+                    words.get(currentIndex).setFav(false);
+                    WordDAO.updateWord(words.get(currentIndex));
+                    updateWordsDisplay();
                     break;
                 default:
                     break;
@@ -120,7 +138,11 @@ public class WordViewer {
             Word currentWord = words.get(currentIndex);
             title.setText((currentIndex + 1) + ". " + currentWord.getTitle());
             translate.setText(currentWord.getTranslate());
-
+            if (currentWord.getFav()) {
+                fav.setStyle("-fx-font-size: 24px; -fx-text-fill: yellow;");
+            }else {
+                fav.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+            }
             Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(currentWord.getTitle(), locale));
 
         }

@@ -79,6 +79,7 @@ public class WordDAO {
                     word.setTitle(rs.getString("title"));
                     word.setTranslate(rs.getString("translate"));
                     word.setExample(rs.getString("example"));
+                    word.setFav(rs.getBoolean("fav"));
                     words.add(word);
                 }
             }
@@ -87,6 +88,29 @@ public class WordDAO {
         }
 
         return words;
+    }
+
+    public static void updateWord(Word word) {
+        String sql = "UPDATE words SET chapter_id = ?, title = ?, translate = ?, example = ?, fav = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, word.getChapterId());
+            stmt.setString(2, word.getTitle());
+            stmt.setString(3, word.getTranslate());
+            stmt.setString(4, word.getExample());
+            stmt.setBoolean(5, word.getFav());
+            stmt.setString(6, word.getId());
+
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Word updated successfully!");
+            } else {
+                System.out.println("No word found with the given ID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 
