@@ -24,3 +24,17 @@
             -fx-mid-text-color   60%
     );
 }
+
+.sync-status {
+    -fx-padding: 5px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+}
+
+.sync-status.error {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #c62828;
+}
