@@ -4,13 +4,19 @@ import com.vocab.NavigationController;
 import com.vocab.model.Course;
 import com.vocab.repository.CourseDAO;
 import com.vocab.service.SyncService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import lombok.Getter;
 
 /**
@@ -23,13 +29,38 @@ public class CourseListPage {
     private final SyncService syncService = new SyncService();
 
     public CourseListPage(NavigationController navigationController) {
-        // Create a ListView to display the courses
         ListView<Course> courseListView = new ListView<>();
         ObservableList<Course> courses = CourseDAO.fetchAll();
         courseListView.setItems(courses);
         // Create a Button named "Explore"
         Button exploreButton = new Button("Explore");
-        exploreButton.setOnAction(event -> syncService.start());
+        Label statusLabel = new Label();
+        statusLabel.setVisible(false);
+        statusLabel.getStyleClass().add("sync-status");
+
+        exploreButton.setOnAction(event -> {
+            exploreButton.setDisable(true);
+            statusLabel.setVisible(true);
+            statusLabel.setText("Syncing...");
+            statusLabel.getStyleClass().remove("error");
+
+            syncService.restart();
+            syncService.setOnSucceeded(e -> {
+                exploreButton.setDisable(false);
+                statusLabel.setText("Sync completed successfully!");
+                courseListView.setItems(CourseDAO.fetchAll()); // Refresh the list
+
+                // Auto-hide after 3 seconds
+                new Timeline(new KeyFrame(Duration.seconds(3),
+                        ae -> statusLabel.setVisible(false))).play();
+            });
+
+            syncService.setOnFailed(e -> {
+                exploreButton.setDisable(false);
+                statusLabel.setText("Sync failed: " + syncService.getException().getMessage());
+                statusLabel.getStyleClass().add("error");
+            });
+        });
 
         courseListView.setCellFactory(new Callback<>() {
             @Override
@@ -51,9 +82,10 @@ public class CourseListPage {
         courseListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> navigationController.navigateToChapters(newValue));
 
         // Create a BorderPane layout
+        HBox centerContainer = new HBox(exploreButton, statusLabel);
         BorderPane root = new BorderPane();
-        root.setCenter(courseListView); // Place the ListView in the center
-        root.setBottom(exploreButton);  // Place the Button at the bottom
+        root.setCenter(courseListView);
+        root.setBottom(centerContainer);
 
         // Create a scene with the layout
         scene = new Scene(root, 300, 200);

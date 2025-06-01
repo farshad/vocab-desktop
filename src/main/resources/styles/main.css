@@ -26,15 +26,11 @@
 }
 
 .sync-status {
-    -fx-padding: 5px;
-    -fx-background-radius: 5px;
-    -fx-border-radius: 5px;
-    -fx-background-color: #e8f5e9;
-    -fx-text-fill: #2e7d32;
+    -fx-start-margin: 2px;
+    -fx-text-fill: #d1e4d2;
     -fx-font-weight: bold;
 }
 
 .sync-status.error {
-    -fx-background-color: #ffebee;
     -fx-text-fill: #c62828;
 }
