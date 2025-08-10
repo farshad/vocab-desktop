@@ -21,11 +21,6 @@ public class DatabaseSetup {
                 "    course_id VARCHAR(255),\n" +
                 "    FOREIGN KEY (course_id) REFERENCES courses(id)\n" +
                 ");\n" +
-                "CREATE TABLE IF NOT EXISTS settings (\n" +
-                "    id VARCHAR(255) PRIMARY KEY,\n" +
-                "    key_ VARCHAR(255) NOT NULL,\n" +
-                "    value_ VARCHAR(255),\n" +
-                ");\n" +
                 "CREATE TABLE IF NOT EXISTS words (\n" +
                 "    id VARCHAR(255) PRIMARY KEY,\n" +
                 "    chapter_id VARCHAR(255),\n" +
@@ -34,6 +29,11 @@ public class DatabaseSetup {
                 "    example VARCHAR(255),\n" +
                 "    fav INTEGER default(0),\n" +
                 "    FOREIGN KEY (chapter_id) REFERENCES chapters(id)\n" +
+                ");\n" +
+                "CREATE TABLE IF NOT EXISTS settings (\n" +
+                "    id VARCHAR(255) PRIMARY KEY,\n" +
+                "    key_ VARCHAR(255) NOT NULL,\n" +
+                "    value_ VARCHAR(255)\n" +
                 ");\n";
         try (Connection conn = DatabaseUtil.getConnection();
              Statement stmt = conn.createStatement()) {
