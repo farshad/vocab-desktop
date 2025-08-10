@@ -61,6 +61,7 @@ public class SettingsPage {
 
             SettingDAO.insert(autoSpeak);
             SettingDAO.insert(reverseCard);
+            navigationController.navigateToCourses();
         });
 
         // Optional: Add labels or tooltips if needed
