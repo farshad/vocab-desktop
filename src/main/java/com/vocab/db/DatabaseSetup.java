@@ -21,6 +21,11 @@ public class DatabaseSetup {
                 "    course_id VARCHAR(255),\n" +
                 "    FOREIGN KEY (course_id) REFERENCES courses(id)\n" +
                 ");\n" +
+                "CREATE TABLE IF NOT EXISTS settings (\n" +
+                "    id VARCHAR(255) PRIMARY KEY,\n" +
+                "    key_ VARCHAR(255) NOT NULL,\n" +
+                "    value_ VARCHAR(255),\n" +
+                ");\n" +
                 "CREATE TABLE IF NOT EXISTS words (\n" +
                 "    id VARCHAR(255) PRIMARY KEY,\n" +
                 "    chapter_id VARCHAR(255),\n" +
@@ -42,6 +47,7 @@ public class DatabaseSetup {
     public static void dropTables() {
         String sql = "DROP TABLE IF EXISTS words;\n" +
                 "DROP TABLE IF EXISTS chapters;\n" +
+                "DROP TABLE IF EXISTS settings;\n" +
                 "DROP TABLE IF EXISTS courses;";
 
         try (Connection conn = DatabaseUtil.getConnection();

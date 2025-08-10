@@ -2,10 +2,7 @@ package com.vocab;
 
 import com.vocab.model.Chapter;
 import com.vocab.model.Course;
-import com.vocab.view.ChapterListPage;
-import com.vocab.view.CourseListPage;
-import com.vocab.view.WordListPage;
-import com.vocab.view.WordViewer;
+import com.vocab.view.*;
 import javafx.stage.Stage;
 
 /**
@@ -37,5 +34,10 @@ public class NavigationController {
     public void navigateToWordViewer(Course course, Chapter chapter, int currentIndex) {
         WordViewer detailsPage = new WordViewer(this, course, chapter, currentIndex);
         primaryStage.setScene(detailsPage.getScene());
+    }
+
+    public void navigateToSettings() {
+        SettingsPage settingsPage = new SettingsPage(this);
+        primaryStage.setScene(settingsPage.getScene());
     }
 }

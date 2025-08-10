@@ -33,6 +33,7 @@ public class CourseListPage {
         courseListView.setItems(courses);
         // Create a Button named "Explore"
         Button exploreButton = new Button("Explore");
+        Button settingsButton = new Button("Settings");
         Label statusLabel = new Label();
         statusLabel.setVisible(false);
         statusLabel.getStyleClass().add("sync-status");
@@ -80,8 +81,10 @@ public class CourseListPage {
 
         courseListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> navigationController.navigateToChapters(newValue));
 
+        settingsButton.setOnAction(event -> navigationController.navigateToSettings());
+
         // Create a BorderPane layout
-        HBox centerContainer = new HBox(exploreButton, statusLabel);
+        HBox centerContainer = new HBox(exploreButton, settingsButton, statusLabel);
         BorderPane root = new BorderPane();
         root.setCenter(courseListView);
         root.setBottom(centerContainer);
