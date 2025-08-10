@@ -2,7 +2,6 @@ package com.vocab.repository;
 
 import com.vocab.db.DatabaseUtil;
 import com.vocab.enums.SettingType;
-import com.vocab.model.Course;
 import com.vocab.model.Setting;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,8 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * @author Farshad Ahangari - farshad.ahg@gmail.com
@@ -21,15 +18,27 @@ import java.util.Locale;
 public class SettingDAO {
 
     public static void insert(Setting setting) {
-        String sql = "INSERT INTO settings (id, key, value) VALUES (?, ?, ?)";
+        deleteByKey(setting.getKey());
+        String sql = "INSERT INTO settings (key_, value_) VALUES (?, ?)";
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, setting.getId());
-            stmt.setString(2, setting.getKey().toString());
-            stmt.setString(3, setting.getValue());
+            stmt.setString(1, setting.getKey().toString());
+            stmt.setString(2, setting.getValue());
             stmt.executeUpdate();
             System.out.println("Setting inserted successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteByKey(SettingType key) {
+        String sql = "DELETE FROM settings WHERE key_ = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, key.toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
