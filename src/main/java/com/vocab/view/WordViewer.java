@@ -73,7 +73,13 @@ public class WordViewer {
         backButton.setOnAction(event -> navigationController.navigateToWords(course, chapter));
         Button showButton = new Button("Show");
         showButton.setFocusTraversable(Boolean.FALSE);
-        showButton.setOnAction(e -> translate.setVisible(!translate.isVisible()));
+        showButton.setOnAction(e -> {
+            if (reverseCard.get()) {
+                title.setVisible(!title.isVisible());
+            } else {
+                translate.setVisible(!translate.isVisible());
+            }
+        });
         translate.setOnMouseClicked(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(currentIndex).getTranslate(), "en-US")));
         translate.setWrapText(true);
 
@@ -82,7 +88,11 @@ public class WordViewer {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new Insets(10));
 
-        translate.setVisible(false);
+        if (reverseCard.get()) {
+            title.setVisible(false);
+        } else {
+            translate.setVisible(false);
+        }
         title.setStyle("-fx-font-size: 24px;");
         translate.setStyle("-fx-font-size: 16px;");
 
@@ -157,7 +167,7 @@ public class WordViewer {
             translate.setText(currentWord.getTranslate());
             if (currentWord.getFav()) {
                 fav.setStyle("-fx-font-size: 24px; -fx-text-fill: yellow;");
-            }else {
+            } else {
                 fav.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
             }
             if (autoSpeak.get()) {
