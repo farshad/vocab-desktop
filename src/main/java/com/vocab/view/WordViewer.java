@@ -1,9 +1,12 @@
 package com.vocab.view;
 
 import com.vocab.NavigationController;
+import com.vocab.enums.SettingType;
 import com.vocab.model.Chapter;
 import com.vocab.model.Course;
+import com.vocab.model.Setting;
 import com.vocab.model.Word;
+import com.vocab.repository.SettingDAO;
 import com.vocab.repository.WordDAO;
 import com.vocab.utils.VoiceHelper;
 import javafx.collections.ObservableList;
@@ -18,7 +21,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Farshad Ahangari - farshad.ahg@gmail.com
@@ -33,8 +38,20 @@ public class WordViewer {
     private Label fav = new Label("*");
     private final ObservableList<Word> words;
     private String locale;
+    AtomicBoolean autoSpeak = new AtomicBoolean(true);
+    AtomicBoolean reverseCard = new AtomicBoolean(false);
 
     public WordViewer(NavigationController navigationController, Course course, Chapter chapter, int passedIndex) {
+        List<Setting> settings = SettingDAO.fetchAll();
+
+        settings.forEach(setting -> {
+            if (setting.getKey().equals(SettingType.AUTO_SPEAK)) {
+                autoSpeak.set(Boolean.parseBoolean(setting.getValue()));
+            } else if (setting.getKey().equals(SettingType.REVERSE_CARD)) {
+                reverseCard.set(Boolean.parseBoolean(setting.getValue()));
+            }
+        });
+
         currentIndex = passedIndex;
         locale = course.getLocale().toString();
         words = WordDAO.fetchWordsByChapterId(chapter.getId());
@@ -143,8 +160,9 @@ public class WordViewer {
             }else {
                 fav.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
             }
-            Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(currentWord.getTitle(), locale));
-
+            if (autoSpeak.get()) {
+                Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(currentWord.getTitle(), locale));
+            }
         }
     }
 
