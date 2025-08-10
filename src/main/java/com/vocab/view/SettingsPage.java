@@ -3,9 +3,12 @@ package com.vocab.view;
 import com.vocab.NavigationController;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import lombok.Getter;
+
+import java.util.Objects;
 
 /**
  * @author Farshad Ahangari - farshad.ahg@gmail.com
@@ -31,6 +34,11 @@ public class SettingsPage {
 
         // Create scene
         scene = new Scene(layout, 300, 200);
+        scene.setOnKeyPressed(event -> {
+            if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
+                navigationController.navigateToCourses();
+            }
+        });
         scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
     }
 }
