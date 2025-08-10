@@ -31,7 +31,7 @@ public class DatabaseSetup {
                 "    FOREIGN KEY (chapter_id) REFERENCES chapters(id)\n" +
                 ");\n" +
                 "CREATE TABLE IF NOT EXISTS settings (\n" +
-                "    id VARCHAR(255) PRIMARY KEY,\n" +
+                "    id BIGINT AUTO_INCREMENT PRIMARY KEY,\n" +
                 "    key_ VARCHAR(255) NOT NULL,\n" +
                 "    value_ VARCHAR(255)\n" +
                 ");\n";
