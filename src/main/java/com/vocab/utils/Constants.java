@@ -6,4 +6,5 @@ package com.vocab.utils;
  */
 public class Constants {
     public static String BASE_URL = "http://localhost:8080/api/v1/";
+    public static Long AUTO_START_TIME = 15L;
 }

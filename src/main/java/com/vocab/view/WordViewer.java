@@ -8,6 +8,7 @@ import com.vocab.model.Setting;
 import com.vocab.model.Word;
 import com.vocab.repository.SettingDAO;
 import com.vocab.repository.WordDAO;
+import com.vocab.utils.Constants;
 import com.vocab.utils.VoiceHelper;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -21,8 +22,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -40,6 +44,7 @@ public class WordViewer {
     private String locale;
     AtomicBoolean autoSpeak = new AtomicBoolean(true);
     AtomicBoolean reverseCard = new AtomicBoolean(false);
+    AtomicBoolean autoStart = new AtomicBoolean(false);
 
     public WordViewer(NavigationController navigationController, Course course, Chapter chapter, int passedIndex) {
         List<Setting> settings = SettingDAO.fetchAll();
@@ -49,6 +54,8 @@ public class WordViewer {
                 autoSpeak.set(Boolean.parseBoolean(setting.getValue()));
             } else if (setting.getKey().equals(SettingType.REVERSE_CARD)) {
                 reverseCard.set(Boolean.parseBoolean(setting.getValue()));
+            } else if (setting.getKey().equals(SettingType.AUTO_START)) {
+                autoStart.set(Boolean.parseBoolean(setting.getValue()));
             }
         });
 
@@ -158,6 +165,10 @@ public class WordViewer {
             }
         });
         scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
+
+        if (autoStart.get()) {
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> javafx.application.Platform.runLater(nextButton::fire), Constants.AUTO_START_TIME, Constants.AUTO_START_TIME, TimeUnit.SECONDS);
+        }
     }
 
     private void updateWordsDisplay() {
