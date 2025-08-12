@@ -24,6 +24,7 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,11 +41,12 @@ public class WordViewer {
     private Label translate = new Label();
     private Label fav = new Label("*");
     private final ObservableList<Word> words;
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private String locale;
-    AtomicBoolean autoSpeak = new AtomicBoolean(true);
-    AtomicBoolean reverseCard = new AtomicBoolean(false);
-    AtomicBoolean autoStart = new AtomicBoolean(false);
-    AtomicLong autoPlayTime = new AtomicLong(Constants.AUTO_START_TIME);
+    private AtomicBoolean autoSpeak = new AtomicBoolean(true);
+    private AtomicBoolean reverseCard = new AtomicBoolean(false);
+    private AtomicBoolean autoStart = new AtomicBoolean(false);
+    private AtomicLong autoPlayTime = new AtomicLong(Constants.AUTO_START_TIME);
 
     public WordViewer(NavigationController navigationController, Course course, Chapter chapter, int passedIndex) {
         List<Setting> settings = SettingDAO.fetchAll();
@@ -79,7 +81,10 @@ public class WordViewer {
         soundButton.setOnAction(event -> Executors.newFixedThreadPool(1).submit(() -> VoiceHelper.speak(words.get(currentIndex).getTitle(), locale)));
         Button backButton = new Button("<-");
         backButton.setFocusTraversable(Boolean.FALSE);
-        backButton.setOnAction(event -> navigationController.navigateToWords(course, chapter));
+        backButton.setOnAction(event -> {
+            scheduler.shutdownNow();
+            navigationController.navigateToWords(course, chapter);
+        });
         Button showButton = new Button("Show");
         showButton.setFocusTraversable(Boolean.FALSE);
         showButton.setOnAction(e -> {
@@ -169,7 +174,7 @@ public class WordViewer {
         scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
 
         if (autoStart.get()) {
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> javafx.application.Platform.runLater(nextButton::fire), autoPlayTime.get(), autoPlayTime.get(), TimeUnit.SECONDS);
+            scheduler.scheduleAtFixedRate(() -> javafx.application.Platform.runLater(nextButton::fire), autoPlayTime.get(), autoPlayTime.get(), TimeUnit.SECONDS);
         }
     }
 
