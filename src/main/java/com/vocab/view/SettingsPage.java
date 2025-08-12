@@ -33,12 +33,15 @@ public class SettingsPage {
         // Create checkboxes for settings
         CheckBox autoSpeakCheckBox = new CheckBox("Auto Speak");
         CheckBox reverseCardCheckBox = new CheckBox("Reverse Card");
+        CheckBox autoStartCheckBox = new CheckBox("Auto Start");
 
         settings.forEach(setting -> {
             if (setting.getKey().equals(SettingType.AUTO_SPEAK)) {
                 autoSpeakCheckBox.setSelected(Boolean.parseBoolean(setting.getValue()));
             } else if (setting.getKey().equals(SettingType.REVERSE_CARD)) {
                 reverseCardCheckBox.setSelected(Boolean.parseBoolean(setting.getValue()));
+            } else if (setting.getKey().equals(SettingType.AUTO_START)) {
+                autoStartCheckBox.setSelected(Boolean.parseBoolean(setting.getValue()));
             }
         });
 
@@ -47,9 +50,8 @@ public class SettingsPage {
         saveButton.setOnAction(event -> {
             Boolean isAutoSpeakEnabled = autoSpeakCheckBox.isSelected();
             Boolean isReverseCardEnabled = reverseCardCheckBox.isSelected();
+            Boolean isAutoStartEnabled = autoStartCheckBox.isSelected();
 
-            System.out.println("Auto Speak: " + isAutoSpeakEnabled);
-            System.out.println("Reverse Card: " + isReverseCardEnabled);
 
             Setting autoSpeak = new Setting();
             autoSpeak.setKey(SettingType.AUTO_SPEAK);
@@ -59,8 +61,13 @@ public class SettingsPage {
             reverseCard.setKey(SettingType.REVERSE_CARD);
             reverseCard.setValue(isReverseCardEnabled.toString());
 
+            Setting autoStart = new Setting();
+            autoStart.setKey(SettingType.AUTO_START);
+            autoStart.setValue(isAutoStartEnabled.toString());
+
             SettingDAO.insert(autoSpeak);
             SettingDAO.insert(reverseCard);
+            SettingDAO.insert(autoStart);
             navigationController.navigateToCourses();
         });
 
@@ -70,7 +77,7 @@ public class SettingsPage {
 
         // Layout container
         // Layout
-        VBox layout = new VBox(15, titleLabel, autoSpeakCheckBox, reverseCardCheckBox, saveButton);
+        VBox layout = new VBox(15, titleLabel, autoSpeakCheckBox, reverseCardCheckBox, autoStartCheckBox, saveButton);
         layout.setPadding(new Insets(20));
         layout.getStyleClass().add("settings-container");
 

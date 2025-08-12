@@ -5,5 +5,5 @@ package com.vocab.enums;
  * @since 8/10/25 - 8:19 AM
  */
 public enum SettingType {
-    AUTO_SPEAK, REVERSE_CARD
+    AUTO_SPEAK, REVERSE_CARD,AUTO_START
 }
