@@ -5,11 +5,13 @@ import com.vocab.db.DatabaseSetup;
 import com.vocab.enums.SettingType;
 import com.vocab.model.Setting;
 import com.vocab.repository.SettingDAO;
+import com.vocab.utils.Constants;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
@@ -34,6 +36,8 @@ public class SettingsPage {
         CheckBox autoSpeakCheckBox = new CheckBox("Auto Speak");
         CheckBox reverseCardCheckBox = new CheckBox("Reverse Card");
         CheckBox autoStartCheckBox = new CheckBox("Auto Start");
+        TextField autoPlayTimeText = new TextField(Constants.AUTO_START_TIME.toString());
+        autoPlayTimeText.setMaxWidth(50);
 
         settings.forEach(setting -> {
             if (setting.getKey().equals(SettingType.AUTO_SPEAK)) {
@@ -42,6 +46,8 @@ public class SettingsPage {
                 reverseCardCheckBox.setSelected(Boolean.parseBoolean(setting.getValue()));
             } else if (setting.getKey().equals(SettingType.AUTO_START)) {
                 autoStartCheckBox.setSelected(Boolean.parseBoolean(setting.getValue()));
+            } else if (setting.getKey().equals(SettingType.AUTO_PLAY_TIME)) {
+                autoPlayTimeText.setText(setting.getValue());
             }
         });
 
@@ -65,9 +71,14 @@ public class SettingsPage {
             autoStart.setKey(SettingType.AUTO_START);
             autoStart.setValue(isAutoStartEnabled.toString());
 
+            Setting autoPlayTime = new Setting();
+            autoPlayTime.setKey(SettingType.AUTO_PLAY_TIME);
+            autoPlayTime.setValue(autoPlayTimeText.getText());
+
             SettingDAO.insert(autoSpeak);
             SettingDAO.insert(reverseCard);
             SettingDAO.insert(autoStart);
+            SettingDAO.insert(autoPlayTime);
             navigationController.navigateToCourses();
         });
 
@@ -77,12 +88,12 @@ public class SettingsPage {
 
         // Layout container
         // Layout
-        VBox layout = new VBox(15, titleLabel, autoSpeakCheckBox, reverseCardCheckBox, autoStartCheckBox, saveButton);
+        VBox layout = new VBox(15, titleLabel, autoSpeakCheckBox, reverseCardCheckBox, autoStartCheckBox, autoPlayTimeText, saveButton);
         layout.setPadding(new Insets(20));
         layout.getStyleClass().add("settings-container");
 
         // Create scene
-        scene = new Scene(layout, 300, 200);
+        scene = new Scene(layout, 300, 300);
         scene.setOnKeyPressed(event -> {
             if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
                 navigationController.navigateToCourses();
