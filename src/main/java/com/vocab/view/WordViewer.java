@@ -22,12 +22,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Farshad Ahangari - farshad.ahg@gmail.com
@@ -45,6 +44,7 @@ public class WordViewer {
     AtomicBoolean autoSpeak = new AtomicBoolean(true);
     AtomicBoolean reverseCard = new AtomicBoolean(false);
     AtomicBoolean autoStart = new AtomicBoolean(false);
+    AtomicLong autoPlayTime = new AtomicLong(Constants.AUTO_START_TIME);
 
     public WordViewer(NavigationController navigationController, Course course, Chapter chapter, int passedIndex) {
         List<Setting> settings = SettingDAO.fetchAll();
@@ -56,6 +56,8 @@ public class WordViewer {
                 reverseCard.set(Boolean.parseBoolean(setting.getValue()));
             } else if (setting.getKey().equals(SettingType.AUTO_START)) {
                 autoStart.set(Boolean.parseBoolean(setting.getValue()));
+            } else if (setting.getKey().equals(SettingType.AUTO_PLAY_TIME)) {
+                autoPlayTime.set(Long.parseLong(setting.getValue()));
             }
         });
 
@@ -167,7 +169,7 @@ public class WordViewer {
         scene.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
 
         if (autoStart.get()) {
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> javafx.application.Platform.runLater(nextButton::fire), Constants.AUTO_START_TIME, Constants.AUTO_START_TIME, TimeUnit.SECONDS);
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> javafx.application.Platform.runLater(nextButton::fire), autoPlayTime.get(), autoPlayTime.get(), TimeUnit.SECONDS);
         }
     }
 
