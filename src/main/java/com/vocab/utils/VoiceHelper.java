@@ -10,7 +10,7 @@ import java.io.IOException;
 public class VoiceHelper {
 
 
-    private static final String CACHE_DIR = System.getProperty("user.home") + "/vocab";
+    private static final String CACHE_DIR = System.getProperty("user.home") + "/Music/vocab";
 
     public static void speak(String text, String language) {
         try {
