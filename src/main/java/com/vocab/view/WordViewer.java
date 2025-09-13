@@ -150,6 +150,12 @@ public class WordViewer {
                 case RIGHT, D:
                     nextButton.fire();
                     break;
+                case V:
+                    VoiceHelper.speak(words.get(currentIndex).getTitle(), locale, "0.7");
+                    break;
+                case C:
+                    VoiceHelper.speak(words.get(currentIndex).getTitle(), locale, "0.5");
+                    break;
                 case ESCAPE:
                     backButton.fire();
                     break;

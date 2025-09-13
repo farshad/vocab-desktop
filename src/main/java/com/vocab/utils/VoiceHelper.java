@@ -12,7 +12,7 @@ public class VoiceHelper {
 
     private static final String CACHE_DIR = System.getProperty("user.home") + "/Music/vocab";
 
-    public static void speak(String text, String language) {
+    public static void speak(String text, String language, String speed) {
         try {
             // Ensure cache directory exists
             File dir = new File(CACHE_DIR);
@@ -33,12 +33,16 @@ public class VoiceHelper {
             }
 
             // Play the cached file
-            String playCommand = String.format("ffplay -autoexit -nodisp \"%s\"", filename);
+            String playCommand = String.format("ffplay -af \"atempo=%s\" -autoexit -nodisp \"%s\"", speed, filename);
             Process playProcess = new ProcessBuilder("bash", "-c", playCommand).start();
             playProcess.waitFor();
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void speak(String text, String language) {
+        speak(text, language, "1");
     }
 }
